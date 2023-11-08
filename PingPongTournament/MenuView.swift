@@ -13,19 +13,17 @@ struct MenuView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-//                LinearGradient(gradient: Gradient(colors: [.mint, .white]), startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea()
-                VStack(alignment: .center) {
-                    NavigationLink(destination: StartView()) { Text("Start").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10) }
+            VStack(alignment: .center) {
+                Spacer()
+                NavigationLink(destination: StartView()) { Text("start-string").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10) }.padding([.vertical], 10)
 
-                    Button { helpViewModel.helpIsShowing = true } label: { Text("Help").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
-                    }
+                Button { helpViewModel.helpIsShowing = true } label: { Text("help-string").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
+                }.padding([.vertical], 10)
 
-                    Toggle("Dark Mode", isOn: $isDarkMode).toggleStyle(SwitchToggleStyle(tint: Color.blue)).padding()
-
-                }.padding(100).sheet(isPresented: $helpViewModel.helpIsShowing) {
-                    HelpView(isShowingHelpView: $helpViewModel.helpIsShowing)
-                }
+                Toggle("Dark Mode", isOn: $isDarkMode).toggleStyle(SwitchToggleStyle(tint: Color.blue)).padding()
+                Spacer()
+            }.padding(100).sheet(isPresented: $helpViewModel.helpIsShowing) {
+                HelpView(isShowingHelpView: $helpViewModel.helpIsShowing)
             }
         }
     }

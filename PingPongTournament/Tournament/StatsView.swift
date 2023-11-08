@@ -17,19 +17,6 @@ struct StatsView: View {
                 Spacer()
             }
             Spacer()
-//            if tournamentViewModel.finished {
-//                HStack {
-//                    Image(systemName: "trophy").resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 35, height: 35)
-//                    Text("\(tournamentViewModel.stats[0].player.uppercased())").font(.title).bold().padding()
-//                    Image(systemName: "trophy").resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 35, height: 35)
-//                }
-//                Text("WON THE TOURNAMENT!").font(.title2).bold().padding()
-//                Spacer()
-//            }
             StatsListView(tournamentViewModel: tournamentViewModel)
             Spacer()
         }.onAppear {

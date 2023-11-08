@@ -11,7 +11,6 @@ import SwiftUI
 
 struct StartView: View {
     let maxUsernameLength = 10
-    @State var finals: Bool = false
     @State var rounds: Int = 1
     @State var inputPlayer: String = ""
     @State var players: [String] = []
@@ -19,9 +18,7 @@ struct StartView: View {
     var body: some View {
         VStack {
             Text("").navigationTitle("Tournament Settings")
-         
-            Toggle("With Finals", isOn: $finals).toggleStyle(SwitchToggleStyle(tint: Color.blue)).padding([.horizontal], 100).padding()
-           
+
             Text("Number of Rounds")
 
             Picker("Number of Rounds", selection: $rounds) {
@@ -50,7 +47,7 @@ struct StartView: View {
 
             Spacer()
             if players.count >= 2 {
-                NavigationLink(destination: TournamentView(rounds: self.$rounds, players: self.$players, finals: $finals).navigationBarBackButtonHidden(true)
+                NavigationLink(destination: TournamentView(rounds: self.$rounds, players: self.$players).navigationBarBackButtonHidden(true)
                 ) {
                     Text("Let's Go!").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
                 }

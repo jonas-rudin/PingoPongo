@@ -30,7 +30,6 @@ struct PlayedMatchesListView: View {
     var body: some View {
         if tournamentViewModel.tournamentStarted() {
             List {
-//                if !tournamentViewModel.playingFinals {
                 ForEach(0 ..< tournamentViewModel.rounds, id: \.self) { round in // TODO: remove played rounds
                     if tournamentViewModel.matches.filter({ $0.round == round && $0.winner != nil && $0.finalNumber == nil }).isEmpty == false {
                         Section(header:
@@ -62,7 +61,7 @@ struct PlayedMatchesListView: View {
                         }
                     }
                 }
-                if tournamentViewModel.finals {
+                if tournamentViewModel.playingFinals {
                     ForEach(Array(stride(from: 0, to: tournamentViewModel.players.count, by: 2)), id: \.self) { final in
                         if tournamentViewModel.matches.filter({ $0.finalNumber == final && $0.winner != nil }).isEmpty == false {
                             Section(header: HStack {
@@ -92,24 +91,6 @@ struct PlayedMatchesListView: View {
                 }
             }.sheet(item: $matchToEdit) { match in EnterMatchDetailsPopoverView(match: match, matchToEdit: $matchToEdit, tournamentViewModel: tournamentViewModel, update: true)
             }
-//            List(tournamentViewModel.matches, id: \.id) { match in
-//                if match.winner != nil {
-//                    ZStack {
-//                        HStack {
-//                            Text(match.players[0]).fontWeight(match.winner == 0 ? .bold : .regular).padding()
-//                            Spacer()
-//                        }
-//                        Text("\(match.points[0]) : \(match.points[1])")
-//                        HStack {
-//                            Spacer()
-//                            Text(match.players[1]).fontWeight(match.winner == 1 ? .bold : .regular).padding()
-//                        }
-//                    }.onTapGesture {
-//                        matchToEdit = match
-//                    }
-//                }
-//            }.sheet(item: $matchToEdit) { match in EnterMatchDetailsPopoverView(match: match, matchToEdit: $matchToEdit, tournamentViewModel: tournamentViewModel, update: true)
-//            }
         }
         else {
             VStack {

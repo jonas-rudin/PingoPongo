@@ -10,9 +10,7 @@ import SwiftUI
 struct TournamentView: View {
     @Binding var rounds: Int
     @Binding var players: [String]
-    @Binding var finals: Bool
     @StateObject var viewModel = TournamentViewModel()
-//    @State var matches: [Match] = []
     @Environment(\.dismiss) var dismiss
     @State private var isPresentingConfirm: Bool = false
     @State private var isPresentingAddRound: Bool = false
@@ -71,14 +69,14 @@ struct TournamentView: View {
                         if !viewModel.playingFinals { Button("Add round") { isPresentingAddRound = !viewModel.playingFinals }.confirmationDialog("Are you sure?", isPresented: $isPresentingAddRound) {
                             Button("Add additional round") {
                                 isPresentingAddRound = false
-                                viewModel.addRound()
+                                Task { await viewModel.addRound() }
                             }
                         }
                         }
                     }
                 }
                 .onAppear {
-                    viewModel.setup(rounds: self.rounds, players: self.players, finals: self.finals)
+                    viewModel.setup(rounds: self.rounds, players: self.players)
                 }
         }
     }
@@ -88,8 +86,7 @@ struct TournamentView_Previews: PreviewProvider {
     static var previews: some View {
         @State var rounds = 1
         @State var players: [String] = ["Jonas", "Pier", "Andre", "Flo"]
-        @State var finals = false
-        TournamentView(rounds: $rounds, players: $players, finals: $finals)
+        TournamentView(rounds: $rounds, players: $players)
     }
 }
 

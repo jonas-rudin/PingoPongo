@@ -111,6 +111,7 @@ struct OpenMatchesListView: View {
 struct WinnerView: View {
     @ObservedObject var tournamentViewModel: TournamentViewModel
     @State var winner: String = ""
+    @State private var isPresentingAlert: Bool = false
 
     var body: some View {
         VStack {
@@ -127,7 +128,7 @@ struct WinnerView: View {
             Text("WON THE TOURNAMENT!").font(.title2).bold().padding()
             Spacer()
             Text("All matches played").font(.title2).padding().foregroundColor(.secondary)
-            tournamentViewModel.finals ? AnyView(HStack {}) : AnyView(Text("Add an additional round or").font(.title2).foregroundColor(.secondary))
+            tournamentViewModel.playingFinals ? AnyView(HStack {}) : AnyView(Text("Add an additional round or").font(.title2).foregroundColor(.secondary))
             HStack {
                 Text("Go to").font(.title2).foregroundColor(.secondary)
                 VStack {
@@ -140,9 +141,19 @@ struct WinnerView: View {
             }
             Spacer()
             Spacer()
-        }.onAppear {
+        }
+        .alert("Congratulation! \n \(winner.uppercased()) holds the 1. place!", isPresented: $isPresentingAlert) {
+            Button("Play Finals", action: { Task { await tournamentViewModel.addFinals() }})
+            Button("Add Round", action: { Task { await tournamentViewModel.addRound() }})
+            Button("Enough, let \(winner.uppercased()) win", role: .cancel, action: {})
+        }
+
+        .onAppear {
             Task {
                 winner = await tournamentViewModel.getWinner()
+                if !tournamentViewModel.playingFinals {
+                    isPresentingAlert = true
+                }
             }
         }
     }

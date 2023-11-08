@@ -11,7 +11,6 @@ import SwiftUI
 final class TournamentViewModel: ObservableObject {
     var rounds: Int
     var players: [String]
-    var finals: Bool
     private var originalRounds: Int
     @Published var numberOfMatches: Int
     @Published var numberOfMatchesPerRound: Int
@@ -20,13 +19,11 @@ final class TournamentViewModel: ObservableObject {
     @Published var stats: [Stats]
     @Published var playerStats: [PlayerStats]
     @Published var playingFinals: Bool
-    @Published var finalsPlayed: Bool
     
     init() {
         self.rounds = 0
         self.players = []
         self.originalRounds = 0
-        self.finals = false
         self.numberOfMatches = 0
         self.numberOfMatchesPerRound = 0
         self.numberOfPlayedMatches = 0
@@ -34,16 +31,13 @@ final class TournamentViewModel: ObservableObject {
         self.stats = []
         self.playerStats = []
         self.playingFinals = false
-        self.finalsPlayed = false
     }
 
-    func setup(rounds: Int, players: [String], finals: Bool) {
+    func setup(rounds: Int, players: [String]) {
         self.rounds = rounds
         self.players = players
-        self.finals = finals
         self.originalRounds = rounds
         self.playingFinals = false
-        self.finalsPlayed = false
         self.numberOfMatchesPerRound = ((players.count - 1) * players.count) / 2
         self.numberOfMatches = self.numberOfMatchesPerRound * rounds
         self.stats = []
@@ -85,7 +79,7 @@ final class TournamentViewModel: ObservableObject {
         return matches
     }
     
-    func addRound() {
+    func addRound() async {
         let numPlayersMin1 = players.count - 1
         var players: [String] = self.players
         
@@ -111,6 +105,7 @@ final class TournamentViewModel: ObservableObject {
             self.numberOfMatches += 1
             self.matches.append(Match(players: [self.stats[i].player, self.stats[i + 1].player], points: [0, 0], round: self.rounds, finalNumber: i))
         }
+        self.playingFinals = true
     }
     
     func matchCompleted(matchId: UUID, points: [Int]) async -> Bool {
@@ -189,12 +184,6 @@ final class TournamentViewModel: ObservableObject {
                     return pS
                 }
             }
-            
-            if self.finals && self.numberOfMatches == self.numberOfPlayedMatches && !self.playingFinals {
-                self.playingFinals = true
-                await self.addFinals()
-            }
-
         } else {
             self.matches[index].winner = nil
             self.matches[index].points = [0, 0]
@@ -285,7 +274,7 @@ final class TournamentViewModel: ObservableObject {
         }
     }
     
-    func  deleteTournament() async {
+    func deleteTournament() async {
         self.matches = []
         self.stats = []
         self.playerStats = []
@@ -293,7 +282,8 @@ final class TournamentViewModel: ObservableObject {
     }
     
     func restartTournament() {
-        self.setup(rounds: self.originalRounds, players: self.players, finals: self.finals)
+//        self.setup(rounds: self.originalRounds, players: self.players, finals: self.finals)
+        self.setup(rounds: self.originalRounds, players: self.players)
         self.numberOfPlayedMatches = 0
     }
     
@@ -315,7 +305,8 @@ final class TournamentViewModel: ObservableObject {
             }
             return false
         }
-        if self.finals && self.playingFinals {
+//        if self.finals && self.playingFinals {
+        if self.playingFinals {
             for finalNumer in stride(from: 0, to: self.stats.count - 1, by: 2) {
                 let finalMatch = self.matches.first(where: { $0.finalNumber == finalNumer && $0.winner != nil })
                 if finalMatch != nil {
@@ -324,7 +315,7 @@ final class TournamentViewModel: ObservableObject {
                     if let winnerStats = self.stats.first(where: { $0.player == finalMatch!.players[winner] }) {
                         if let loserStats = self.stats.first(where: { $0.player == finalMatch!.players[loser] }) {
                             sortedStats[finalNumer] = winnerStats
-                            sortedStats[finalNumer+1] = loserStats
+                            sortedStats[finalNumer + 1] = loserStats
                         }
                     }
                 }
