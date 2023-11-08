@@ -17,9 +17,7 @@ struct StartView: View {
 
     var body: some View {
         VStack {
-            Text("").navigationTitle("Tournament Settings")
-
-            Text("Number of Rounds")
+            Text("Number of Rounds").navigationTitle("Tournament Setup")
 
             Picker("Number of Rounds", selection: $rounds) {
                 ForEach(1 ... 10, id: \.self) { number in
