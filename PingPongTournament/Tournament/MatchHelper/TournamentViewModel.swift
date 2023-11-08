@@ -19,6 +19,7 @@ final class TournamentViewModel: ObservableObject {
     @Published var stats: [Stats]
     @Published var playerStats: [PlayerStats]
     @Published var playingFinals: Bool
+    var finished: Bool
     
     init() {
         self.rounds = 0
@@ -31,6 +32,7 @@ final class TournamentViewModel: ObservableObject {
         self.stats = []
         self.playerStats = []
         self.playingFinals = false
+        self.finished = false
     }
 
     func setup(rounds: Int, players: [String]) {
@@ -43,6 +45,7 @@ final class TournamentViewModel: ObservableObject {
         self.stats = []
         self.playerStats = []
         self.matches = self.initiateMatches()
+        self.finished = false
     }
 
     // initiate matches with round robin tournament
@@ -97,6 +100,7 @@ final class TournamentViewModel: ObservableObject {
             // Rotate the players list, keeping the first player fixed
             players = [players[0]] + Array(players.suffix(numPlayersMin1)) + [players[1]]
         }
+        self.finished = false
     }
     
     func addFinals() async {
@@ -339,5 +343,9 @@ final class TournamentViewModel: ObservableObject {
     
     func tournamentFinished() -> Bool {
         return self.numberOfPlayedMatches == self.numberOfMatches
+    }
+    
+    func finishedWithoutFinals() {
+        self.finished = true
     }
 }

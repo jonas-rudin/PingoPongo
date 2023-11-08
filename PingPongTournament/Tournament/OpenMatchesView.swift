@@ -127,8 +127,13 @@ struct WinnerView: View {
             }
             Text("WON THE TOURNAMENT!").font(.title2).bold().padding()
             Spacer()
-            Text("All matches played").font(.title2).padding().foregroundColor(.secondary)
-            tournamentViewModel.playingFinals ? AnyView(HStack {}) : AnyView(Text("Add an additional round or").font(.title2).foregroundColor(.secondary))
+
+            tournamentViewModel.playingFinals ?
+                AnyView(Text("All matches and finals played").font(.title2).padding().foregroundColor(.secondary)) : AnyView(
+                    VStack {
+                        Text("All matches played").font(.title2).padding().foregroundColor(.secondary)
+                        Text("Add an additional round or").font(.title2).foregroundColor(.secondary)
+                    })
             HStack {
                 Text("Go to").font(.title2).foregroundColor(.secondary)
                 VStack {
@@ -145,13 +150,13 @@ struct WinnerView: View {
         .alert("Congratulation! \n \(winner.uppercased()) holds the 1. place!", isPresented: $isPresentingAlert) {
             Button("Play Finals", action: { Task { await tournamentViewModel.addFinals() }})
             Button("Add Round", action: { Task { await tournamentViewModel.addRound() }})
-            Button("Enough, let \(winner.uppercased()) win", role: .cancel, action: {})
+            Button("Enough, let \(winner.uppercased()) win", role: .cancel, action: { tournamentViewModel.finishedWithoutFinals() })
         }
 
         .onAppear {
             Task {
                 winner = await tournamentViewModel.getWinner()
-                if !tournamentViewModel.playingFinals {
+                if !tournamentViewModel.playingFinals && !tournamentViewModel.finished {
                     isPresentingAlert = true
                 }
             }

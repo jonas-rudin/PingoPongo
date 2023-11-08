@@ -13,7 +13,7 @@ struct StartView: View {
     let maxUsernameLength = 10
     @State var rounds: Int = 1
     @State var inputPlayer: String = ""
-    @State var players: [String] = []
+    @Binding var players: [String]
 
     var body: some View {
         VStack {
@@ -36,7 +36,7 @@ struct StartView: View {
                         inputPlayer = ""
                     }
                 }.padding()
-            }.padding([.horizontal], 30)
+            }.padding([.horizontal], 20)
 
             List {
                 ForEach(players.prefix(20), id: \.self) { user in
@@ -69,6 +69,7 @@ struct StartView: View {
 
 struct StartView_Previews: PreviewProvider {
     static var previews: some View {
-        StartView()
+        @State var players: [String] = []
+        StartView(players: $players)
     }
 }

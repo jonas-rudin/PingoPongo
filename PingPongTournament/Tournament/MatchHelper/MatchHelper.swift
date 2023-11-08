@@ -91,14 +91,18 @@ struct EnterMatchDetailsPopoverView: View {
                 Task {
                     success = update ? await tournamentViewModel.completedMatchUpdate(matchId: match.id, points: match.points, oldPoints: matchToEdit!.points) : await tournamentViewModel.matchCompleted(matchId: match.id, points: match.points)
                     if success {
-                        if match.points[0] == 0 {
-                            alertIsShown = true
-                            alertText = match.players[0] + " du Fläsche"
-                            alertButtonText = "True"
-                        } else if match.points[1] == 0 {
-                            alertIsShown = true
-                            alertText = match.players[1] + " du Fläsche"
-                            alertButtonText = "True"
+                        if tournamentViewModel.numberOfMatches < tournamentViewModel.numberOfPlayedMatches {
+                            if match.points[0] == 0 {
+                                alertIsShown = true
+                                alertText = match.players[0] + " du Fläsche"
+                                alertButtonText = "True"
+                            } else if match.points[1] == 0 {
+                                alertIsShown = true
+                                alertText = match.players[1] + " du Fläsche"
+                                alertButtonText = "True"
+                            } else {
+                                matchToEdit = nil
+                            }
                         } else {
                             matchToEdit = nil
                         }
@@ -112,7 +116,10 @@ struct EnterMatchDetailsPopoverView: View {
             }
             .alert(isPresented: $alertIsShown) {
                 Alert(title: Text(alertText),
-                      dismissButton: .default(Text(alertButtonText)) { success ? matchToEdit = nil : nil
+                      dismissButton: .default(Text(alertButtonText)) {
+                          if success {
+                              matchToEdit = nil
+                          }
                       })
             }
             Spacer()
