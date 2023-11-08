@@ -91,7 +91,7 @@ struct EnterMatchDetailsPopoverView: View {
                 Task {
                     success = update ? await tournamentViewModel.completedMatchUpdate(matchId: match.id, points: match.points, oldPoints: matchToEdit!.points) : await tournamentViewModel.matchCompleted(matchId: match.id, points: match.points)
                     if success {
-                        if tournamentViewModel.numberOfMatches < tournamentViewModel.numberOfPlayedMatches {
+                        if tournamentViewModel.numberOfMatches > tournamentViewModel.numberOfPlayedMatches {
                             if match.points[0] == 0 {
                                 alertIsShown = true
                                 alertText = match.players[0] + " du Fläsche"
