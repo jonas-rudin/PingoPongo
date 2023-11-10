@@ -55,7 +55,9 @@ struct PlayedMatchesListView: View {
                                     }
                                 }.contentShape(Rectangle())
                                     .onTapGesture {
-                                        matchToEdit = match
+                                        if !tournamentViewModel.playingFinals {
+                                            matchToEdit = match
+                                        }
                                     }
                             }
                         }
@@ -66,7 +68,7 @@ struct PlayedMatchesListView: View {
                         if tournamentViewModel.matches.filter({ $0.finalNumber == final && $0.winner != nil }).isEmpty == false {
                             Section(header: HStack {
                                 Spacer()
-                                Text("Final for \(final + 1). place") // TODO: remove title if played
+                                Text("Final for \(final + 1). place")
                                 Spacer()
                             }) {
                                 ForEach(tournamentViewModel.matches.filter { $0.finalNumber == final && $0.winner != nil }, id: \.id) { match in
@@ -82,7 +84,9 @@ struct PlayedMatchesListView: View {
                                         }
                                     }.contentShape(Rectangle())
                                         .onTapGesture {
-                                            matchToEdit = match
+                                            if !tournamentViewModel.playingFinals {
+                                                matchToEdit = match
+                                            }
                                         }
                                 }
                             }

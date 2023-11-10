@@ -144,9 +144,10 @@ struct PlayerStatsListView: View {
                             }
                         }
                     }
-                }.frame(minHeight: CGFloat(52 * (playerStats.oponents.count + 1)))
-                Spacer()
-                playerStats.winLoss.count > 1 ? AnyView(WinLossChartView(winLoss: playerStats.winLoss)) : AnyView(Spacer())
+                }
+//                }.frame(minHeight: CGFloat(52 * (playerStats.oponents.count + 1)))
+//                Spacer()
+//                playerStats.winLoss.count > 1 ? AnyView(WinLossChartView(winLoss: playerStats.winLoss)) : AnyView(Spacer())
             }
         }
     }

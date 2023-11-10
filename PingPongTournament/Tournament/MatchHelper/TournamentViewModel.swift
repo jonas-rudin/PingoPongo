@@ -285,7 +285,7 @@ final class TournamentViewModel: ObservableObject {
         self.numberOfPlayedMatches = 0
     }
     
-    func restartTournament() {
+    func restartTournament() async {
 //        self.setup(rounds: self.originalRounds, players: self.players, finals: self.finals)
         self.setup(rounds: self.originalRounds, players: self.players)
         self.numberOfPlayedMatches = 0

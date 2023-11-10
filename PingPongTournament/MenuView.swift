@@ -16,10 +16,10 @@ struct MenuView: View {
         NavigationView {
             VStack(alignment: .center) {
                 Spacer()
-                NavigationLink(destination: StartView(players: $players)) { Text("Start").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10) }.padding([.vertical], 10)
+                NavigationLink(destination: StartView(players: $players)) { Text("Start").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10) }.padding([.vertical], 6)
 
                 Button { helpViewModel.helpIsShowing = true } label: { Text("Help").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
-                }.padding([.vertical], 10)
+                }.padding([.vertical], 6)
 
                 Toggle("Dark Mode", isOn: $isDarkMode).toggleStyle(SwitchToggleStyle(tint: Color.blue)).padding()
                 Spacer()

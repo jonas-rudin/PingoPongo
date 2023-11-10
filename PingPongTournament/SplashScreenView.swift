@@ -20,8 +20,8 @@ struct SplashScreenView: View {
         } else {
             VStack {
                 VStack {
-                    Text("🏓").font(.system(size: 150)).foregroundColor(.black.opacity(0.80))
-                    Text("Pingo Pongo").font(.title)
+                    Image(.intro1).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
+                    Text("Pingo Pongo").font(.title).bold()
                 }
                 .padding()
                 .scaleEffect(size).opacity(opacity).onAppear {

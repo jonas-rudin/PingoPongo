@@ -46,7 +46,9 @@ struct TournamentView: View {
                                 }
                                 Button("Restart") {
                                     isPresentingConfirm = false
-                                    viewModel.restartTournament()
+                                    Task {
+                                        await viewModel.restartTournament()
+                                    }
                                 }
                             }
                         } else {
@@ -60,7 +62,9 @@ struct TournamentView: View {
                                 }
                                 Button("Restart") {
                                     isPresentingConfirm = false
-                                    viewModel.restartTournament()
+                                    Task {
+                                        await viewModel.restartTournament()
+                                    }
                                 }
                             }
                         }
