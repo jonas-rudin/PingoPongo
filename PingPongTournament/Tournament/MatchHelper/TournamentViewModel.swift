@@ -286,7 +286,6 @@ final class TournamentViewModel: ObservableObject {
     }
     
     func restartTournament() async {
-//        self.setup(rounds: self.originalRounds, players: self.players, finals: self.finals)
         self.setup(rounds: self.originalRounds, players: self.players)
         self.numberOfPlayedMatches = 0
     }
@@ -309,7 +308,6 @@ final class TournamentViewModel: ObservableObject {
             }
             return false
         }
-//        if self.finals && self.playingFinals {
         if self.playingFinals {
             for finalNumer in stride(from: 0, to: self.stats.count - 1, by: 2) {
                 let finalMatch = self.matches.first(where: { $0.finalNumber == finalNumer && $0.winner != nil })
