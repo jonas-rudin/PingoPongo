@@ -68,7 +68,8 @@ struct StatsListView: View {
                         statsToShow = stats
                     }
             }
-        }.popover(item: $statsToShow) { stats in PlayerMatchDetailsView(stats: stats, statsToShow: $statsToShow, playerStats: tournamentViewModel.playerStats.first(where: { $0.player == stats.player }))
+        }.popover(item: $statsToShow) { stats in
+            PlayerMatchDetailsView(stats: stats, statsToShow: $statsToShow, playerStats: tournamentViewModel.playerStats.first(where: { $0.player == stats.player }), tournamentViewModel: tournamentViewModel)
         }
     }
 }
@@ -77,6 +78,7 @@ struct PlayerMatchDetailsView: View {
     @State var stats: Stats
     @Binding var statsToShow: Stats?
     @State var playerStats: PlayerStats?
+    @ObservedObject var tournamentViewModel: TournamentViewModel
     @State var alertIsShown: Bool = false
     @State var alertText: String = ""
     @State var alertButtonText: String = ""
@@ -92,7 +94,7 @@ struct PlayerMatchDetailsView: View {
                 }.padding()
             }
             playerStats != nil
-                ? AnyView(PlayerStatsListView(stats: stats, playerStats: playerStats!))
+                ? AnyView(PlayerStatsListView(stats: stats, playerStats: playerStats!, tournamentViewModel: tournamentViewModel))
                 : AnyView(ErrorView())
 
             Spacer()
@@ -103,51 +105,62 @@ struct PlayerMatchDetailsView: View {
 struct PlayerStatsListView: View {
     @State var stats: Stats
     @State var playerStats: PlayerStats
-
+    @ObservedObject var tournamentViewModel: TournamentViewModel
+    @State var pieChartData: [(String, Int, Color)]?
     var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Text(stats.player + "-Stats").font(.title2).bold()
-                Spacer()
-            }
-            Spacer()
-            Spacer()
-            HStack {
-                //            Image(systemName: "medal").bold().frame(width: 50)
-                Text("Players").bold()
-                Spacer()
-                Text("Win").bold().frame(width: 50)
-                Text("Loss").bold().frame(width: 50)
-                Text("Pts+").bold().frame(width: 50)
-                Text("Pts-").bold().frame(width: 50)
-            }.padding(.horizontal, 40)
+        ScrollView {
             VStack {
-                List {
-                    Section { HStack {
-                        Text("Total").bold()
-                        Spacer()
-                        Text("\(stats.win)").bold().frame(width: 50)
-                        Text("\(stats.loss)").bold().frame(width: 50)
-                        Text("\(stats.pointsMade)").bold().frame(width: 50)
-                        Text("\(stats.pointsReceived)").bold().frame(width: 50)
-                    }}
-                    Section {
-                        ForEach(playerStats.oponents, id: \.self) { stats in
-                            HStack {
-                                Text(stats.player)
-                                Spacer()
-                                Text("\(stats.win)").frame(width: 50)
-                                Text("\(stats.loss)").frame(width: 50)
-                                Text("\(stats.pointsMade)").frame(width: 50)
-                                Text("\(stats.pointsReceived)").frame(width: 50)
+                HStack {
+                    Spacer()
+                    Text(stats.player + "-Stats").font(.title2).bold()
+                    Spacer()
+                }
+                Spacer()
+                Spacer()
+                HStack {
+                    //            Image(systemName: "medal").bold().frame(width: 50)
+                    Text("Players").bold()
+                    Spacer()
+                    Text("Win").bold().frame(width: 50)
+                    Text("Loss").bold().frame(width: 50)
+                    Text("Pts+").bold().frame(width: 50)
+                    Text("Pts-").bold().frame(width: 50)
+                }.padding(.horizontal, 40)
+                VStack {
+                    List {
+                        Section { HStack {
+                            Text("Total").bold()
+                            Spacer()
+                            Text("\(stats.win)").bold().frame(width: 50)
+                            Text("\(stats.loss)").bold().frame(width: 50)
+                            Text("\(stats.pointsMade)").bold().frame(width: 50)
+                            Text("\(stats.pointsReceived)").bold().frame(width: 50)
+                        }}
+                        Section {
+                            ForEach(playerStats.oponents, id: \.self) { stats in
+                                HStack {
+                                    Text(stats.player)
+                                    Spacer()
+                                    Text("\(stats.win)").frame(width: 50)
+                                    Text("\(stats.loss)").frame(width: 50)
+                                    Text("\(stats.pointsMade)").frame(width: 50)
+                                    Text("\(stats.pointsReceived)").frame(width: 50)
+                                }
                             }
                         }
                     }
+                }.frame(minHeight: CGFloat(100 + (60 * playerStats.oponents.count)))
+                Spacer()
+                if pieChartData != nil {
+                    ResultsChartView(pieChartData: pieChartData!)
+                    Spacer()
                 }
-//                }.frame(minHeight: CGFloat(52 * (playerStats.oponents.count + 1)))
-//                Spacer()
+
 //                playerStats.winLoss.count > 1 ? AnyView(WinLossChartView(winLoss: playerStats.winLoss)) : AnyView(Spacer())
+            }.onAppear {
+                Task {
+                    pieChartData = await tournamentViewModel.getMatchStatsForGraph(ids: playerStats.matchIds, player: stats.player)
+                }
             }
         }
     }
@@ -170,6 +183,31 @@ struct WinLossChartView: View {
                 Text("Win-Loss")
             }.chartYScale(range: .plotDimension(padding: 30)).padding(.horizontal)
         }
+    }
+}
+
+struct ResultsChartView: View {
+    @State var pieChartData: [(name: String, count: Int, color: Color)]
+    var body: some View {
+        VStack {
+            Text("Result Chart").font(.title2)
+            Chart {
+                ForEach(pieChartData, id: \.name) { data in
+                    SectorMark(
+                        angle: .value("Results", data.count),
+                        angularInset: 2.0
+                    )
+                    .foregroundStyle(by: .value("Type", data.name))
+                    .annotation(position: .overlay) {
+                        if data.count > 0 {
+                            Text("\(data.count)")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                        }
+                    }.cornerRadius(5)
+                }
+            }.frame(height: 400)
+        }.padding()
     }
 }
 

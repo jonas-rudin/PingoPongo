@@ -22,12 +22,12 @@ struct TournamentView: View {
                     Image(systemName: "figure.table.tennis")
                     Text("Open").bold()
                 }
-
+                
                 PlayedMatchesView(tournamentViewModel: viewModel).tabItem {
                     Image(systemName: "list.clipboard")
                     Text("Played").bold()
                 }
-
+                
                 StatsView(tournamentViewModel: viewModel).tabItem {
                     Image(systemName: "medal")
                     Text("Stats").bold()

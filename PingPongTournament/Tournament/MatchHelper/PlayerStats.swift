@@ -21,6 +21,7 @@ struct PlayerStats: Hashable, Identifiable {
     var player: String
     var oponents: [OponentStats]
     var winLoss: [Int] = [0]
+    var matchIds: [UUID] = []
 }
 
 struct OponentStats: Hashable, Identifiable {

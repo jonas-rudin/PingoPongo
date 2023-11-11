@@ -170,7 +170,9 @@ final class TournamentViewModel: ObservableObject {
                     }
                     var winLoss = pS.winLoss
                     winLoss.append(winLoss.last! + 1)
-                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss)
+                    var matchIds = pS.matchIds
+                    matchIds.append(self.matches[index].id)
+                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: matchIds)
                 } else if pS.player == self.matches[index].players[loser] {
                     // update loser PlayerStats
                     let oponents: [OponentStats] = pS.oponents.map { o in
@@ -183,7 +185,9 @@ final class TournamentViewModel: ObservableObject {
                     }
                     var winLoss = pS.winLoss
                     winLoss.append(winLoss.last! - 1)
-                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss)
+                    var matchIds = pS.matchIds
+                    matchIds.append(self.matches[index].id)
+                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: matchIds)
                 } else {
                     return pS
                 }
@@ -241,8 +245,9 @@ final class TournamentViewModel: ObservableObject {
                         winLoss.remove(at: winLoss.count - 1)
                         winLoss.append(winLoss.last! - 1)
                     }
-                    // TODO: fix [0, -1, -2] -> [0, -2]
-                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss)
+//                    var matchIds = pS.matchIds
+//                    matchIds.removeAll(where: { $0 == matchId })
+                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: pS.matchIds)
                 } else if pS.player == self.matches[index].players[loser] {
                     // revert loser PlayerStats
                     let oponents: [OponentStats] = pS.oponents.map { o in
@@ -261,7 +266,10 @@ final class TournamentViewModel: ObservableObject {
                         winLoss.remove(at: winLoss.count - 1)
                         winLoss.append(winLoss.last! + 1)
                     }
-                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss)
+                    
+//                    var matchIds = pS.matchIds
+//                    matchIds.removeAll(where: { $0 == matchId })
+                    return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: pS.matchIds)
                 } else {
                     return pS
                 }
@@ -345,5 +353,41 @@ final class TournamentViewModel: ObservableObject {
     
     func finishedWithoutFinals() {
         self.finished = true
+    }
+    
+    func getMatchStatsForGraph(ids: [UUID], player: String) async -> [(name: String, count: Int, color: Color)]? {
+        let playedMatches = self.matches.filter { ids.contains($0.id) }
+        var results = [0, 0, 0, 0, 0, 0]
+        for match in playedMatches {
+            if match.winner != nil {
+                let winner = match.winner!
+                let loser = (1 - winner) % 2
+                if match.players[winner] == player {
+                    if match.points[loser] <= 2 {
+                        results[0] += 1
+                    } else if match.points[winner] - match.points[loser] <= 2 {
+                        results[2] += 1
+                    } else {
+                        results[1] += 1
+                    }
+                } else {
+                    if match.points[loser] <= 2 {
+                        results[5] += 1
+                    } else if match.points[winner] - match.points[loser] <= 2 {
+                        results[3] += 1
+                    } else {
+                        results[4] += 1
+                    }
+                }
+            }
+        }
+        if results.reduce(0, +) == 0 {
+            return nil
+        }
+        let nameMapping: [String] = ["Clearly Won: Your opponent scored at most two points.", "Won: Your opponent scored between 2 and 8 points.", "Barely Won: Your opponent scored 2 points less than you.", "Barely Lost: You scored 2 points less than the winner.", "Lost: You scored between 2 and 8 points.", "Lost Clearly: You scored at most 2 points."]
+        let colorMapping: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo]
+        return results.enumerated().map { index, element in
+            (name: nameMapping[index], count: element, color: colorMapping[index])
+        }
     }
 }
