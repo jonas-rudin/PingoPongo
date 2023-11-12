@@ -149,14 +149,15 @@ struct PlayerStatsListView: View {
                             }
                         }
                     }
-                }.frame(minHeight: CGFloat(100 + (60 * playerStats.oponents.count)))
+                }.frame(minHeight: CGFloat(100 + (52 * playerStats.oponents.count)))
                 Spacer()
                 if pieChartData != nil {
                     ResultsChartView(pieChartData: pieChartData!)
                     Spacer()
                 }
-
-//                playerStats.winLoss.count > 1 ? AnyView(WinLossChartView(winLoss: playerStats.winLoss)) : AnyView(Spacer())
+                if playerStats.winLoss.count > 1 {
+                    WinLossChartView(winLoss: playerStats.winLoss)
+                }
             }.onAppear {
                 Task {
                     pieChartData = await tournamentViewModel.getMatchStatsForGraph(ids: playerStats.matchIds, player: stats.player)
@@ -177,12 +178,13 @@ struct WinLossChartView: View {
                 ForEach(Array(winLoss.enumerated()), id: \.element) { i, wL in
                     LineMark(x: PlottableValue.value("Match", i), y: PlottableValue.value("WinLoss", wL))
                 }
-            }.chartXAxisLabel(position: .bottom, alignment: .center) {
+            }.frame(height: 300).chartXAxisLabel(position: .bottom, alignment: .center) {
                 Text("Matches Played")
             }.chartYAxisLabel(position: .trailing, alignment: .center) {
                 Text("Win-Loss")
             }.chartYScale(range: .plotDimension(padding: 30)).padding(.horizontal)
-        }
+
+        }.padding()
     }
 }
 

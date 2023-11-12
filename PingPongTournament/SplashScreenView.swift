@@ -20,7 +20,12 @@ struct SplashScreenView: View {
         } else {
             VStack {
                 VStack {
-                    Image(.intro1).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
+                    if isDarkMode {
+                        Image(.introdark).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
+                    }
+                    else {
+                        Image(.intro).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
+                    }
                     Text("Pingo Pongo").font(.title).bold()
                 }
                 .padding()

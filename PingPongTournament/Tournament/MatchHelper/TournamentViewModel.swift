@@ -245,8 +245,6 @@ final class TournamentViewModel: ObservableObject {
                         winLoss.remove(at: winLoss.count - 1)
                         winLoss.append(winLoss.last! - 1)
                     }
-//                    var matchIds = pS.matchIds
-//                    matchIds.removeAll(where: { $0 == matchId })
                     return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: pS.matchIds)
                 } else if pS.player == self.matches[index].players[loser] {
                     // revert loser PlayerStats
@@ -266,9 +264,6 @@ final class TournamentViewModel: ObservableObject {
                         winLoss.remove(at: winLoss.count - 1)
                         winLoss.append(winLoss.last! + 1)
                     }
-                    
-//                    var matchIds = pS.matchIds
-//                    matchIds.removeAll(where: { $0 == matchId })
                     return PlayerStats(player: pS.player, oponents: oponents, winLoss: winLoss, matchIds: pS.matchIds)
                 } else {
                     return pS

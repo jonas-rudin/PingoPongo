@@ -112,7 +112,7 @@ struct EnterMatchDetailsPopoverView: View {
                         alertButtonText = "OK"
                     }
                 }
-            } label: { Text("Complete Match").bold().frame(width: 180, height: 50).background(Color.blue.gradient).foregroundColor(Color.white).cornerRadius(10)
+            } label: { Text("Complete Match").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
             }
             .alert(isPresented: $alertIsShown) {
                 Alert(title: Text(alertText),
