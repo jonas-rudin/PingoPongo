@@ -11,6 +11,7 @@ import SwiftUI
 final class TournamentViewModel: ObservableObject {
     var rounds: Int
     var players: [String]
+    var mode: String
     private var originalRounds: Int
     @Published var numberOfMatches: Int
     @Published var numberOfMatchesPerRound: Int
@@ -24,6 +25,7 @@ final class TournamentViewModel: ObservableObject {
     init() {
         self.rounds = 0
         self.players = []
+        self.mode = ""
         self.originalRounds = 0
         self.numberOfMatches = 0
         self.numberOfMatchesPerRound = 0
@@ -35,12 +37,13 @@ final class TournamentViewModel: ObservableObject {
         self.finished = false
     }
 
-    func setup(rounds: Int, players: [String]) {
+    func setup(rounds: Int, players: [String], mode: String) {
         self.rounds = rounds
         self.players = players
+        self.mode = mode
         self.originalRounds = rounds
         self.playingFinals = false
-        self.numberOfMatchesPerRound = ((players.count - 1) * players.count) / 2
+        self.numberOfMatchesPerRound = mode == rr ? ((players.count - 1) * players.count) / 2 : Int(floor(Double(players.count) / 2.0))
         self.numberOfMatches = self.numberOfMatchesPerRound * rounds
         self.stats = []
         self.playerStats = []
@@ -52,24 +55,7 @@ final class TournamentViewModel: ObservableObject {
     private func initiateMatches() -> [Match] {
         var matches: [Match] = []
         var players: [String] = self.players
-        
-        if players.count % 2 != 0 {
-            players.append("-1")
-        }
-        
-        let numPlayersMin2 = players.count - 2
-        for round in 0..<self.rounds {
-            for _ in 0..<players.count - 1 {
-                for i in 0..<(players.count / 2) {
-                    if players[i] != "-1" && players[players.count - 1 - i] != "-1" {
-                        matches.append(Match(players: [players[i], players[players.count - 1 - i]], points: [0, 0], round: round))
-                    }
-                }
-                // Rotate the players list, keeping the first player fixed
-                players = [players[0]] + Array(players.suffix(numPlayersMin2)) + [players[1]]
-            }
-        }
-        
+       
         let oponent: [OponentStats] = self.players.map { elem in
             OponentStats(player: elem)
         }
@@ -78,34 +64,84 @@ final class TournamentViewModel: ObservableObject {
             self.stats.append(Stats(player: player))
             self.playerStats.append(PlayerStats(player: player, oponents: oponent.filter { $0.player != player }))
         }
-
-        return matches
-    }
-    
-    func addRound() async {
-        let numPlayersMin1 = players.count - 1
-        var players: [String] = self.players
         
         if players.count % 2 != 0 {
             players.append("-1")
         }
+        
+        if self.mode == ss {
+            // Swiss System
+            for i in stride(from: 0, to: players.count - 1, by: 2) {
+                if players[i] != "-1" && players[i + 1] != "-1" {
+                    matches.append(Match(players: [players[i], players[i + 1]], points: [0, 0], round: 0))
+                }
+            }
+            return matches
+            
+        } else {
+            // Round Robin
+            let numPlayersMin2 = players.count - 2
+            for round in 0..<self.rounds {
+                for _ in 0..<players.count - 1 {
+                    for i in 0..<(players.count / 2) {
+                        if players[i] != "-1" && players[players.count - 1 - i] != "-1" {
+                            matches.append(Match(players: [players[i], players[players.count - 1 - i]], points: [0, 0], round: round))
+                        }
+                    }
+                    // Rotate the players list, keeping the first player fixed
+                    players = [players[0]] + Array(players.suffix(numPlayersMin2)) + [players[1]]
+                }
+            }
+            
+            return matches
+        }
+    }
+    
+    func addRound() async {
         self.rounds += 1
-        for _ in 0..<players.count - 1 {
-            for i in 0..<(players.count / 2) {
-                if players[i] != "-1" && players[players.count - 1 - i] != "-1" {
-                    self.matches.append(Match(players: [players[i], players[players.count - 1 - i]], points: [0, 0], round: self.rounds - 1))
+
+        if self.mode == ss {
+            var players: [String] = self.stats.map { $0.player }
+
+            if self.rounds % 2 == 0 {
+                if players.count % 2 != 0 {
+                    players.insert("-1", at: 0)
+                }
+            } else {
+                if players.count % 2 != 0 {
+                    players.append("-1")
+                }
+            }
+            for i in stride(from: 0, to: players.count - 1, by: 2) {
+                if players[i] != "-1" && players[i + 1] != "-1" {
+                    self.matches.append(Match(players: [players[i], players[i + 1]], points: [0, 0], round: self.rounds - 1))
                     self.numberOfMatches += 1
                 }
             }
-            // Rotate the players list, keeping the first player fixed
-            players = [players[0]] + Array(players.suffix(numPlayersMin1)) + [players[1]]
+        } else {
+            var players: [String] = self.players
+
+            let numPlayersMin1 = players.count - 1
+            if players.count % 2 != 0 {
+                players.append("-1")
+            }
+            for _ in 0..<players.count - 1 {
+                for i in 0..<(players.count / 2) {
+                    if players[i] != "-1" && players[players.count - 1 - i] != "-1" {
+                        self.matches.append(Match(players: [players[i], players[players.count - 1 - i]], points: [0, 0], round: self.rounds - 1))
+                        self.numberOfMatches += 1
+                    }
+                }
+                // Rotate the players list, keeping the first player fixed
+                players = [players[0]] + Array(players.suffix(numPlayersMin1)) + [players[1]]
+            }
         }
         self.finished = false
     }
     
     func addFinals() async {
         for i in stride(from: 0, to: self.stats.count - 1, by: 2) {
-            await self.sortStats()
+            await self.sortStatsRoundRobin()
             self.numberOfMatches += 1
             self.matches.append(Match(players: [self.stats[i].player, self.stats[i + 1].player], points: [0, 0], round: self.rounds, finalNumber: i))
         }
@@ -153,6 +189,15 @@ final class TournamentViewModel: ObservableObject {
                     return Stats(player: s.player, win: s.win, loss: s.loss + 1, pointsMade: s.pointsMade + points[loser], pointsReceived: s.pointsReceived + points[winner])
                 } else {
                     return s
+                }
+            }
+            
+            // switch for swiss system
+            if self.mode == ss {
+                let winnerIndex = self.stats.firstIndex(where: { $0.player == self.matches[index].players[winner] })
+                let loserIndex = self.stats.firstIndex(where: { $0.player == self.matches[index].players[loser] })
+                if winnerIndex! > loserIndex! {
+                    self.stats.swapAt(winnerIndex!, loserIndex!)
                 }
             }
             
@@ -224,6 +269,8 @@ final class TournamentViewModel: ObservableObject {
                     return s
                 }
             }
+            
+            // Swissmode, no more update
                 
             // revert playerStats for old match
             self.playerStats = self.playerStats.map { pS in
@@ -289,11 +336,20 @@ final class TournamentViewModel: ObservableObject {
     }
     
     func restartTournament() async {
-        self.setup(rounds: self.originalRounds, players: self.players)
+        self.setup(rounds: self.originalRounds, players: self.players, mode: self.mode)
         self.numberOfPlayedMatches = 0
     }
     
-    func sortStats() async {
+    func sortStatsSwissEndOfRound() async {
+        if self.players.count % 2 == 0 {
+            print("Here")
+            for i in stride(from: 1, to: self.stats.count - 1, by: 2) {
+                self.stats.swapAt(i, i + 1)
+            }
+        }
+    }
+    
+    func sortStatsRoundRobin() async {
         var sortedStats = self.stats.sorted { stats1, stats2 -> Bool in
             if stats1.win > stats2.win {
                 return true
@@ -331,7 +387,9 @@ final class TournamentViewModel: ObservableObject {
     
     func getWinner() async -> String {
         if self.numberOfPlayedMatches == self.numberOfMatches {
-            await self.sortStats()
+            if self.mode == rr {
+                await self.sortStatsRoundRobin()
+            }
             return self.stats[0].player
         } else {
             return ""

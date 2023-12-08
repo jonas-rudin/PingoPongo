@@ -40,10 +40,10 @@ struct OpenMatchesListView: View {
         if !tournamentViewModel.tournamentFinished() {
             List {
                 if !tournamentViewModel.playingFinals {
-                    ForEach(0 ..< tournamentViewModel.rounds, id: \.self) { round in // TODO: remove played rounds
+                    ForEach(0 ..< tournamentViewModel.rounds, id: \.self) { round in
                         if tournamentViewModel.matches.filter({ $0.round == round && $0.winner == nil }).isEmpty == false {
                             Section(header:
-                                tournamentViewModel.rounds > 1 ? AnyView(
+                                tournamentViewModel.rounds > 1 || tournamentViewModel.mode == ss ? AnyView(
                                     HStack {
                                         Spacer()
                                         Text("Round \(round + 1)")
@@ -112,6 +112,8 @@ struct WinnerView: View {
     @ObservedObject var tournamentViewModel: TournamentViewModel
     @State var winner: String = ""
     @State private var isPresentingAlert: Bool = false
+    @State var isPresentingFinalConfirm: Bool = false
+    @State var isPresentingConfirm: Bool = false
 
     var body: some View {
         VStack {
@@ -148,9 +150,46 @@ struct WinnerView: View {
             Spacer()
         }
         .alert("Congratulation! \n \(winner.uppercased()) holds the 1. place!", isPresented: $isPresentingAlert) {
-            Button("Play Finals", action: { Task { await tournamentViewModel.addFinals() }})
-            Button("Add Round", action: { Task { await tournamentViewModel.addRound() }})
-            Button("Enough, let \(winner.uppercased()) win", role: .cancel, action: { tournamentViewModel.finishedWithoutFinals() })
+            Button("Add Round", action: {
+                Task {
+                    if tournamentViewModel.mode == ss {
+                        await tournamentViewModel.sortStatsSwissEndOfRound()
+                    }
+                    await tournamentViewModel.addRound()
+                }
+            })
+            // only show "play finals" if round robin or enough rounds played that the last could have reached the top
+            if tournamentViewModel.mode != ss ||
+                (tournamentViewModel.players.count % 2 == 0 && tournamentViewModel.rounds >= tournamentViewModel.players.count / 2) ||
+                (tournamentViewModel.players.count % 2 == 1 && tournamentViewModel.rounds >= tournamentViewModel.players.count)
+
+            {
+                Button("Play Finals", action: { isPresentingFinalConfirm = true
+                    print("here")
+                    print(isPresentingFinalConfirm)
+                }).confirmationDialog("Are you sure?", isPresented: $isPresentingFinalConfirm) {
+                    Button("Yes") {
+                        isPresentingFinalConfirm = false
+                        Task { await tournamentViewModel.addFinals() }
+                    }
+                }
+            }
+            Button("Enough, let \(winner.uppercased()) win", role: .cancel, action: {
+                Task {
+                    if tournamentViewModel.mode == ss {
+                        await tournamentViewModel.sortStatsSwissEndOfRound()
+                    }
+                }
+                tournamentViewModel.finishedWithoutFinals()
+            })
+        }.alert("Are you sure? You can't add anymore rounds after the finals", isPresented: $isPresentingFinalConfirm) {
+            Button("Yes") {
+                isPresentingFinalConfirm = false
+                Task { await tournamentViewModel.addFinals() }
+            }
+            Button("No") {
+                isPresentingFinalConfirm = false
+            }
         }
 
         .onAppear {

@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct PingPongTournamentApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @AppStorage("scrollResult") private var scrollResult = true
 
     var body: some Scene {
         WindowGroup {

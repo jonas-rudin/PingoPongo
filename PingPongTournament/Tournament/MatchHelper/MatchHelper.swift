@@ -26,6 +26,8 @@ struct MockMatches {
 }
 
 struct EnterMatchDetailsPopoverView: View {
+    @AppStorage("scrollResult") var scrollResult: Bool = true
+    @AppStorage("isDarkMode") var isDarkMode: Bool = true
     @State var match: Match
     @Binding var matchToEdit: Match?
     @ObservedObject var tournamentViewModel: TournamentViewModel
@@ -36,9 +38,16 @@ struct EnterMatchDetailsPopoverView: View {
     @State var update: Bool = false
     @Environment(\.dismiss) var dismiss
 
+    let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     var body: some View {
         VStack {
             HStack {
+                Toggle("Scroll", isOn: $scrollResult).toggleStyle(SwitchToggleStyle(tint: Color.blue)).labelsHidden().padding()
                 Spacer()
                 Button {
                     tournamentViewModel.storePoints(matchId: match.id, points: match.points)
@@ -70,21 +79,41 @@ struct EnterMatchDetailsPopoverView: View {
                     Spacer()
                 }
             }
-
-            HStack {
+            if scrollResult {
+                HStack {
+                    Spacer()
+                    Picker("Results Player 1", selection: $match.points[0]) {
+                        ForEach(0 ... 50, id: \.self) { number in
+                            Text("\(number)")
+                        }
+                    }.pickerStyle(.wheel)
+                    Text(":")
+                    Picker("Results Player 2", selection: $match.points[1]) {
+                        ForEach(0 ... 50, id: \.self) { number in
+                            Text("\(number)")
+                        }
+                    }.pickerStyle(.wheel)
+                    Spacer()
+                }
+            } else {
                 Spacer()
-                Picker("Number of Rounds", selection: $match.points[0]) {
-                    ForEach(0 ... 50, id: \.self) { number in
-                        Text("\(number)")
-                    }
-                }.pickerStyle(.wheel)
-                Text(":")
-                Picker("Number of Rounds", selection: $match.points[1]) {
-                    ForEach(0 ... 50, id: \.self) { number in
-                        Text("\(number)")
-                    }
-                }.pickerStyle(.wheel)
-                Spacer()
+                HStack {
+                    Spacer()
+                    TextField("", value: $match.points[0], formatter: formatter)
+                        .font(.system(size: 21))
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .padding()
+                    Text(":")
+                    TextField("", value: $match.points[1], formatter: formatter)
+                        .font(.system(size: 21))
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .padding()
+                    Spacer()
+                }
             }
             Spacer()
             Button {

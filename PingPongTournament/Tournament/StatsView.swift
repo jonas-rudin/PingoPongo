@@ -20,8 +20,10 @@ struct StatsView: View {
             StatsListView(tournamentViewModel: tournamentViewModel)
             Spacer()
         }.onAppear {
-            Task {
-                await tournamentViewModel.sortStats()
+            if tournamentViewModel.mode == rr {
+                Task {
+                    await tournamentViewModel.sortStatsRoundRobin()
+                }
             }
         }
     }

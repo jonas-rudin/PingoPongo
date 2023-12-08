@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-
 struct TournamentView: View {
     @Binding var rounds: Int
     @Binding var players: [String]
+    @Binding var mode: String
     @StateObject var viewModel = TournamentViewModel()
     @Environment(\.dismiss) var dismiss
     @State private var isPresentingConfirm: Bool = false
@@ -22,12 +22,12 @@ struct TournamentView: View {
                     Image(systemName: "figure.table.tennis")
                     Text("Open").bold()
                 }
-                
+
                 PlayedMatchesView(tournamentViewModel: viewModel).tabItem {
                     Image(systemName: "list.clipboard")
                     Text("Played").bold()
                 }
-                
+
                 StatsView(tournamentViewModel: viewModel).tabItem {
                     Image(systemName: "medal")
                     Text("Stats").bold()
@@ -70,17 +70,18 @@ struct TournamentView: View {
                         }
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        if !viewModel.playingFinals { Button("Add round") { isPresentingAddRound = !viewModel.playingFinals }.confirmationDialog("Are you sure?", isPresented: $isPresentingAddRound) {
-                            Button("Add additional round") {
-                                isPresentingAddRound = false
-                                Task { await viewModel.addRound() }
+                        if (mode == rr && !viewModel.playingFinals) || (mode == ss && viewModel.tournamentFinished() && !viewModel.playingFinals) {
+                            Button("Add round") { isPresentingAddRound = !viewModel.playingFinals }.confirmationDialog("Are you sure?", isPresented: $isPresentingAddRound) {
+                                Button("Add additional round") {
+                                    isPresentingAddRound = false
+                                    Task { await viewModel.addRound() }
+                                }
                             }
-                        }
                         }
                     }
                 }
                 .onAppear {
-                    viewModel.setup(rounds: self.rounds, players: self.players)
+                    viewModel.setup(rounds: self.rounds, players: self.players, mode: self.mode)
                 }
         }
     }
@@ -90,7 +91,8 @@ struct TournamentView_Previews: PreviewProvider {
     static var previews: some View {
         @State var rounds = 1
         @State var players: [String] = ["Jonas", "Pier", "Andre", "Flo"]
-        TournamentView(rounds: $rounds, players: $players)
+        @State var mode = "Round Robin"
+        TournamentView(rounds: $rounds, players: $players, mode: $mode)
     }
 }
 

@@ -8,23 +8,35 @@
 import Combine
 import Foundation
 import SwiftUI
+let rr = "Round Robin"
+let ss = "Swiss System"
 
 struct StartView: View {
     let maxUsernameLength = 10
     @State var rounds: Int = 1
     @State var inputPlayer: String = ""
     @Binding var players: [String]
+    @State var modes: [String] = [rr, ss]
+    @State var selectedMode: String = rr
 
     var body: some View {
         VStack {
-            Text("").navigationTitle("Tournament Setup")
-            Text("Number of Rounds")
+            Text("Mode").navigationTitle("Tournament Setup")
 
-            Picker("Number of Rounds", selection: $rounds) {
-                ForEach(1 ... 10, id: \.self) { number in
-                    Text("\(number)")
+            Picker("Mode", selection: $selectedMode) {
+                ForEach(modes, id: \.self) { mode in
+                    Text("\(mode)")
                 }
             }.pickerStyle(.menu)
+
+            if selectedMode == modes[0] {
+                Text("Number of Rounds")
+                Picker("Number of Rounds", selection: $rounds) {
+                    ForEach(1 ... 10, id: \.self) { number in
+                        Text("\(number)")
+                    }
+                }.pickerStyle(.menu)
+            }
 
             Text("Enter Player Name")
 
@@ -42,11 +54,12 @@ struct StartView: View {
                     Text(user)
                 }
                 .onDelete(perform: delete)
+                .onMove(perform: move)
             }
 
             Spacer()
             if players.count >= 2 {
-                NavigationLink(destination: TournamentView(rounds: self.$rounds, players: self.$players).navigationBarBackButtonHidden(true)
+                NavigationLink(destination: TournamentView(rounds: self.$rounds, players: self.$players, mode: self.$selectedMode ).navigationBarBackButtonHidden(true)
                 ) {
                     Text("Let's Go!").bold().frame(width: 180, height: 50).background(Color.blue).foregroundColor(Color.white).cornerRadius(10)
                 }
@@ -57,6 +70,10 @@ struct StartView: View {
 
     func delete(at offsets: IndexSet) {
         players.remove(atOffsets: offsets)
+    }
+
+    func move(from source: IndexSet, to destination: Int) {
+        players.move(fromOffsets: source, toOffset: destination)
     }
 
     func limitText(_ max: Int) {

@@ -26,6 +26,7 @@
 		C78985DE2AD08EE700ABEF2C /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78985DD2AD08EE700ABEF2C /* MenuView.swift */; };
 		C78985E02AD093C900ABEF2C /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78985DF2AD093C900ABEF2C /* StartView.swift */; };
 		C78985E22AD0941E00ABEF2C /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78985E12AD0941E00ABEF2C /* HelpView.swift */; };
+		C7CD860B2B23782B00709649 /* Preview Content in Resources */ = {isa = PBXBuildFile; fileRef = C7CD860A2B23782B00709649 /* Preview Content */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		C78985DD2AD08EE700ABEF2C /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		C78985DF2AD093C900ABEF2C /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		C78985E12AD0941E00ABEF2C /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		C7CD860A2B23782B00709649 /* Preview Content */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			children = (
 				C72906042AD7E6C300A136D0 /* HelpViewModel.swift */,
 				C78985E12AD0941E00ABEF2C /* HelpView.swift */,
+				C78985B72AD0869300ABEF2C /* Preview Content */,
 			);
 			path = HelpView;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 		C78985B02AD0869200ABEF2C /* PingPongTournament */ = {
 			isa = PBXGroup;
 			children = (
+				C7CD860A2B23782B00709649 /* Preview Content */,
 				C78985B12AD0869200ABEF2C /* PingPongTournamentApp.swift */,
 				C78985DD2AD08EE700ABEF2C /* MenuView.swift */,
 				C78985DF2AD093C900ABEF2C /* StartView.swift */,
@@ -157,7 +161,6 @@
 				C78985B52AD0869300ABEF2C /* Assets.xcassets */,
 				C72906292AD821A400A136D0 /* Tournament */,
 				C72906032AD7E69400A136D0 /* HelpView */,
-				C78985B72AD0869300ABEF2C /* Preview Content */,
 			);
 			path = PingPongTournament;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7CD860B2B23782B00709649 /* Preview Content in Resources */,
 				C78985B92AD0869300ABEF2C /* Preview Assets.xcassets in Resources */,
 				C78985B62AD0869300ABEF2C /* Assets.xcassets in Resources */,
 			);

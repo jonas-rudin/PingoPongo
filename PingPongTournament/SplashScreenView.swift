@@ -21,9 +21,8 @@ struct SplashScreenView: View {
             VStack {
                 VStack {
                     if isDarkMode {
-                        Image(.introdark).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
-                    }
-                    else {
+                        Image(.intro2).resizable().frame(width: 300, height: 300).foregroundColor(.black.opacity(0.80))
+                    } else {
                         Image(.intro).resizable().frame(width: 200, height: 200).foregroundColor(.black.opacity(0.80))
                     }
                     Text("Pingo Pongo").font(.title).bold()
@@ -37,9 +36,8 @@ struct SplashScreenView: View {
                 }
                 .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     withAnimation { self.isActive = true }
-                    }
                 }
-               
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ struct PlayedMatchesListView: View {
                                     Text("\(match.points[0]) : \(match.points[1])")
                                     HStack {
                                         Spacer()
-                                        Text(match.players[1]).fontWeight(match.winner == 0 ? .bold : .regular).padding()
+                                        Text(match.players[1]).fontWeight(match.winner == 1 ? .bold : .regular).padding()
                                     }
                                 }.contentShape(Rectangle())
                                     .onTapGesture {
@@ -80,7 +80,7 @@ struct PlayedMatchesListView: View {
                                         Text("\(match.points[0]) : \(match.points[1])")
                                         HStack {
                                             Spacer()
-                                            Text(match.players[1]).fontWeight(match.winner == 0 ? .bold : .regular).padding()
+                                            Text(match.players[1]).fontWeight(match.winner == 1 ? .bold : .regular).padding()
                                         }
                                     }.contentShape(Rectangle())
                                         .onTapGesture {
