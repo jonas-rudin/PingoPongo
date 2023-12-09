@@ -56,7 +56,7 @@ struct EnterMatchDetailsPopoverView: View {
                 }.padding()
             }
             Spacer()
-            ZStack { // TODO: find a way to align it properly ev with length of text
+            ZStack {
                 HStack {
                     Spacer()
                     Text(match.players[0]).padding(.horizontal)

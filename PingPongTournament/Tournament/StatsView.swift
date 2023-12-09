@@ -97,7 +97,7 @@ struct PlayerMatchDetailsView: View {
             }
             playerStats != nil
                 ? AnyView(PlayerStatsListView(stats: stats, playerStats: playerStats!, tournamentViewModel: tournamentViewModel))
-                : AnyView(ErrorView())
+                : AnyView(HStack {})
 
             Spacer()
         }

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C723D90B2AE5B3B200EC87A9 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C723D90A2AE5B3B200EC87A9 /* ErrorView.swift */; };
 		C72885F92ADC0DFA000C1617 /* TournamentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72885F82ADC0DFA000C1617 /* TournamentViewModel.swift */; };
 		C72885FB2AE41979000C1617 /* PlayerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72885FA2AE41979000C1617 /* PlayerStats.swift */; };
 		C72906052AD7E6C300A136D0 /* HelpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72906042AD7E6C300A136D0 /* HelpViewModel.swift */; };
@@ -47,7 +46,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C723D90A2AE5B3B200EC87A9 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		C72885F82ADC0DFA000C1617 /* TournamentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentViewModel.swift; sourceTree = "<group>"; };
 		C72885FA2AE41979000C1617 /* PlayerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStats.swift; sourceTree = "<group>"; };
 		C72906042AD7E6C300A136D0 /* HelpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewModel.swift; sourceTree = "<group>"; };
@@ -157,7 +155,6 @@
 				C78985DD2AD08EE700ABEF2C /* MenuView.swift */,
 				C78985DF2AD093C900ABEF2C /* StartView.swift */,
 				C78985DB2AD087CA00ABEF2C /* SplashScreenView.swift */,
-				C723D90A2AE5B3B200EC87A9 /* ErrorView.swift */,
 				C78985B52AD0869300ABEF2C /* Assets.xcassets */,
 				C72906292AD821A400A136D0 /* Tournament */,
 				C72906032AD7E69400A136D0 /* HelpView */,
@@ -326,7 +323,6 @@
 				C729062B2AD821CC00A136D0 /* PlayedMatchesView.swift in Sources */,
 				C729062F2AD9754600A136D0 /* OpenMatchesView.swift in Sources */,
 				C72885F92ADC0DFA000C1617 /* TournamentViewModel.swift in Sources */,
-				C723D90B2AE5B3B200EC87A9 /* ErrorView.swift in Sources */,
 				C78985E02AD093C900ABEF2C /* StartView.swift in Sources */,
 				C78985E22AD0941E00ABEF2C /* HelpView.swift in Sources */,
 				C72885FB2AE41979000C1617 /* PlayerStats.swift in Sources */,
@@ -503,8 +499,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -512,10 +509,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Gaggo.PingPongTournament;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -534,8 +534,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -543,9 +544,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Gaggo.PingPongTournament;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
