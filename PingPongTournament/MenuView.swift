@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MenuView: View {
     @StateObject var helpViewModel = HelpViewModel()
-    @AppStorage("isDarkMode") var isDarkMode: Bool = true
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @State var players: [String] = []
 
     var body: some View {
