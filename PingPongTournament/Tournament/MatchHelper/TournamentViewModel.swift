@@ -121,7 +121,7 @@ final class TournamentViewModel: ObservableObject {
         } else {
             var players: [String] = self.players
 
-            let numPlayersMin1 = players.count - 1
+            let numPlayersMin2 = players.count - 2
             if players.count % 2 != 0 {
                 players.append("-1")
             }
@@ -133,7 +133,7 @@ final class TournamentViewModel: ObservableObject {
                     }
                 }
                 // Rotate the players list, keeping the first player fixed
-                players = [players[0]] + Array(players.suffix(numPlayersMin1)) + [players[1]]
+                players = [players[0]] + Array(players.suffix(numPlayersMin2)) + [players[1]]
             }
         }
         self.finished = false
