@@ -20,7 +20,8 @@ final class TournamentViewModel: ObservableObject {
     @Published var stats: [Stats]
     @Published var playerStats: [PlayerStats]
     @Published var playingFinals: Bool
-    var finished: Bool
+    @Published var finished: Bool
+    @Published var allMatchesPlayed: Bool
     
     init() {
         self.rounds = 0
@@ -35,6 +36,7 @@ final class TournamentViewModel: ObservableObject {
         self.playerStats = []
         self.playingFinals = false
         self.finished = false
+        self.allMatchesPlayed = false
     }
 
     func setup(rounds: Int, players: [String], mode: String) {
@@ -49,6 +51,7 @@ final class TournamentViewModel: ObservableObject {
         self.playerStats = []
         self.matches = self.initiateMatches()
         self.finished = false
+        self.allMatchesPlayed = false
     }
 
     // initiate matches with round robin tournament
@@ -99,6 +102,7 @@ final class TournamentViewModel: ObservableObject {
     
     func addRound() async {
         self.rounds += 1
+        self.allMatchesPlayed = false
 
         if self.mode == ss {
             var players: [String] = self.stats.map { $0.player }
@@ -146,6 +150,7 @@ final class TournamentViewModel: ObservableObject {
             self.matches.append(Match(players: [self.stats[i].player, self.stats[i + 1].player], points: [0, 0], round: self.rounds, finalNumber: i))
         }
         self.playingFinals = true
+        self.allMatchesPlayed = false
     }
     
     func matchCompleted(matchId: UUID, points: [Int]) async -> Bool {
@@ -178,7 +183,7 @@ final class TournamentViewModel: ObservableObject {
         
         if success {
             self.numberOfPlayedMatches += 1
-
+            
             // update stats
             self.stats = self.stats.map { s in
                 if s.player == self.matches[index].players[winner] {
@@ -237,6 +242,10 @@ final class TournamentViewModel: ObservableObject {
                     return pS
                 }
             }
+            if self.numberOfPlayedMatches == self.numberOfMatches {
+                self.allMatchesPlayed = true
+            }
+
         } else {
             self.matches[index].winner = nil
             self.matches[index].points = [0, 0]
@@ -342,7 +351,6 @@ final class TournamentViewModel: ObservableObject {
     
     func sortStatsSwissEndOfRound() async {
         if self.players.count % 2 == 0 {
-            print("Here")
             for i in stride(from: 1, to: self.stats.count - 1, by: 2) {
                 self.stats.swapAt(i, i + 1)
             }
@@ -398,10 +406,6 @@ final class TournamentViewModel: ObservableObject {
     
     func tournamentStarted() -> Bool {
         return self.numberOfPlayedMatches > 0
-    }
-    
-    func tournamentFinished() -> Bool {
-        return self.numberOfPlayedMatches == self.numberOfMatches
     }
     
     func finishedWithoutFinals() {

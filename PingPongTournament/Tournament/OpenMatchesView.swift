@@ -37,7 +37,7 @@ struct OpenMatchesListView: View {
     @State var lastIndex: Int = 0
 
     var body: some View {
-        if !tournamentViewModel.tournamentFinished() {
+        if !tournamentViewModel.allMatchesPlayed {
             List {
                 if !tournamentViewModel.playingFinals {
                     ForEach(0 ..< tournamentViewModel.rounds, id: \.self) { round in
@@ -76,7 +76,7 @@ struct OpenMatchesListView: View {
                         if tournamentViewModel.matches.filter({ $0.finalNumber == final && $0.winner == nil }).isEmpty == false {
                             Section(header: HStack {
                                 Spacer()
-                                Text("Final for \(final + 1). place") // TODO: remove title if played
+                                Text("Final for \(final + 1). place")
                                 Spacer()
                             }) {
                                 ForEach(tournamentViewModel.matches.filter { $0.finalNumber == final && $0.winner == nil }, id: \.id) { match in
@@ -164,10 +164,7 @@ struct WinnerView: View {
                 (tournamentViewModel.players.count % 2 == 1 && tournamentViewModel.rounds >= tournamentViewModel.players.count)
 
             {
-                Button("Play Finals", action: { isPresentingFinalConfirm = true
-                    print("here")
-                    print(isPresentingFinalConfirm)
-                }).confirmationDialog("Are you sure?", isPresented: $isPresentingFinalConfirm) {
+                Button("Play Finals", action: { isPresentingFinalConfirm = true }).confirmationDialog("Are you sure?", isPresented: $isPresentingFinalConfirm) {
                     Button("Yes") {
                         isPresentingFinalConfirm = false
                         Task { await tournamentViewModel.addFinals() }

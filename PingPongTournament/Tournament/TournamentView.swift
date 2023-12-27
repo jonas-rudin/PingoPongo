@@ -35,8 +35,8 @@ struct TournamentView: View {
             }.navigationTitle("")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
-                        if viewModel.tournamentFinished() {
-                            Button("Back") { isPresentingConfirm = viewModel.tournamentFinished() }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
+                        if viewModel.allMatchesPlayed {
+                            Button("Back") { isPresentingConfirm = viewModel.allMatchesPlayed }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
                                 Button("Back to Menu") {
                                     isPresentingConfirm = false
                                     Task {
@@ -52,7 +52,7 @@ struct TournamentView: View {
                                 }
                             }
                         } else {
-                            Button("Cancel Tournament") { isPresentingConfirm = !viewModel.tournamentFinished() }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
+                            Button("Cancel Tournament") { isPresentingConfirm = !viewModel.allMatchesPlayed }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
                                 Button("Delete Tournament", role: .destructive) {
                                     isPresentingConfirm = false
                                     Task {
@@ -70,7 +70,7 @@ struct TournamentView: View {
                         }
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        if (mode == rr && !viewModel.playingFinals) || (mode == ss && viewModel.tournamentFinished() && !viewModel.playingFinals) {
+                        if (mode == rr && !viewModel.playingFinals) || (mode == ss && viewModel.allMatchesPlayed && !viewModel.playingFinals) {
                             Button("Add round") { isPresentingAddRound = !viewModel.playingFinals }.confirmationDialog("Are you sure?", isPresented: $isPresentingAddRound) {
                                 Button("Add additional round") {
                                     isPresentingAddRound = false
