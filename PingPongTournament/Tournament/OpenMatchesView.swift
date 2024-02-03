@@ -37,7 +37,7 @@ struct OpenMatchesListView: View {
     @State var lastIndex: Int = 0
 
     var body: some View {
-        if !tournamentViewModel.allMatchesPlayed {
+        if !tournamentViewModel.allMatchesPlayed { // TODO fix this
             List {
                 if !tournamentViewModel.playingFinals {
                     ForEach(0 ..< tournamentViewModel.rounds, id: \.self) { round in
@@ -103,6 +103,7 @@ struct OpenMatchesListView: View {
                 EnterMatchDetailsPopoverView(match: match, matchToEdit: $matchToEdit, tournamentViewModel: tournamentViewModel)
             }
         } else {
+            // TODO wont enter this one...
             WinnerView(tournamentViewModel: tournamentViewModel)
         }
     }
@@ -189,12 +190,10 @@ struct WinnerView: View {
             }
         }
 
-        .onAppear {
-            Task {
-                winner = await tournamentViewModel.getWinner()
-                if !tournamentViewModel.playingFinals && !tournamentViewModel.finished {
-                    isPresentingAlert = true
-                }
+        .task {
+            winner = await tournamentViewModel.getWinner()
+            if !tournamentViewModel.playingFinals && !tournamentViewModel.finished {
+                isPresentingAlert = true
             }
         }
     }

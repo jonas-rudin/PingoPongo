@@ -125,10 +125,11 @@ final class TournamentViewModel: ObservableObject {
         } else {
             var players: [String] = self.players
 
-            let numPlayersMin2 = players.count - 2
             if players.count % 2 != 0 {
                 players.append("-1")
             }
+            let numPlayersMin2 = players.count - 2
+
             for _ in 0..<players.count - 1 {
                 for i in 0..<(players.count / 2) {
                     if players[i] != "-1" && players[players.count - 1 - i] != "-1" {
@@ -183,7 +184,9 @@ final class TournamentViewModel: ObservableObject {
         
         if success {
             self.numberOfPlayedMatches += 1
-            
+            if self.numberOfPlayedMatches == self.numberOfMatches {
+                self.allMatchesPlayed = true
+            }
             // update stats
             self.stats = self.stats.map { s in
                 if s.player == self.matches[index].players[winner] {
@@ -242,10 +245,6 @@ final class TournamentViewModel: ObservableObject {
                     return pS
                 }
             }
-            if self.numberOfPlayedMatches == self.numberOfMatches {
-                self.allMatchesPlayed = true
-            }
-
         } else {
             self.matches[index].winner = nil
             self.matches[index].points = [0, 0]
